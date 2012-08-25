@@ -178,7 +178,7 @@ $ git checkout -f
                 <section>
                     <h2>Unerwünschte Dateien ignorieren</h2>
                     <pre><code>
-$ gs
+$ git status
 # On branch master
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
@@ -221,7 +221,7 @@ $ git add .gitignore && git commit -m ".gitignore"
 
                     * Es gibt einen Master-Branch, standardmäßig `master`
                     * `git`-Branches sind lightweight im Vergleich zu `svn`
-                    * Es ist üblich, **nicht** auf dem `master`-Branch zu arbeiten, sondern auf einem anderen Branch
+                    * Es ist üblich, **nicht** auf dem `master`-Branch zu arbeiten, sondern auf einem Feature-Branch.
 
                     <pre><code>
 $ git branch
@@ -270,6 +270,7 @@ $ git commit -a -m "Copyright Info"
                     <pre><code>
 $ git checkout master
 Switched to branch 'master'
+
 $ git merge testing
 Updating 37f5ef8..6245426
 Fast-forward
@@ -385,21 +386,23 @@ $ cat .git/config
                     </code></pre>
                 </section>
 
+                <section>
+                    <h3>Illustration von <code>git clone</code></h3>
+                    <img src="img/remote1.png" alt="" />
+                </section>
+
 				<section data-markdown>
                     ## Ein lokales Repo veröffentlichen
 
                     <pre><code>
 # zu einem existierenden Repo wird eine Origin hinzugefügt und das komplette Repo dorthin gepushed.
 
-cd existing_git_repo
-git remote add origin git@git.igd-r.fraunhofer.de:mein_cooles_repo.git
-git push origin master
-                    </code></pre>
-                </section>
+$ cd existing_git_repo
 
-                <section>
-                    <h3>Illustration von <code>git clone</code></h3>
-                    <img src="img/remote1.png" alt="" />
+$ git remote add origin git@git.igd-r.fraunhofer.de:mein_cooles_repo.git
+
+$ git push -u origin master
+                    </code></pre>
                 </section>
 
 				<section data-markdown>
@@ -457,16 +460,102 @@ $ git push origin :LOCALBRANCH
                     Änderungen können gesichert werden, ohne dass sie committed werden müssen. Sie können zu einem beliebigen Zeitpunkt zurückgespielt werden.
 
                     <pre><code>
-# Änderungen sichern
+# Aktuelle Änderungen im Working Directory sichern
 $ git stash
 
 # gesicherte Änderungen anzeigen
 $ git stash list
 
-# Änderungen zurückspielen und vom stack löschen
+# Letze gesicherte Änderung zurückspielen
+$ git stash apply
+
+# Letzte gesicherte Änderung zurückspielen und vom Stack löschen
 $ git stash pull
                     </code></pre>
                 </section>
+
+				<section data-markdown>
+                    ## Interaktiver Rebase
+
+                    Möglichkeit Commits zu vertauschen, zusammenzufassen, neu zu ordnen oder zu verwerfen.
+                    **Keine History Manipulation bei gepushten Commits !!!**
+
+                    <pre><code>
+$ git rebase -i HEAD~3
+
+# Es öffnet sich der Editor und zeigt folgendes:
+
+pick d54719f removed useless whitespace
+pick 83b8948 deleted readme
+pick 8929323 added line to license
+
+# Commands:
+#  p, pick = use commit
+#  r, reword = use commit, but edit the commit message
+#  e, edit = use commit, but stop for amending
+#  s, squash = use commit, but meld into previous commit
+#  f, fixup = like "squash", but discard this commit's log message
+                    </code></pre>
+                </section>
+
+				<section data-markdown>
+                    ## Interaktives Staging
+
+                    Möglichkeit einzelne Änderungen (*hunks*) an einer Datei zum Index hinzuzufügen.
+
+                    <pre><code>
+$ git add -i
+
+# Es öffnet sich der Editor und lässt einen mittels Kommandos einzelne hunks hinzufügen.
+                    </code></pre>
+                </section>
+
+				<section data-markdown>
+                    ## `git bisect`
+
+                    Binäre Suche in Commits, welcher Commit einen bestimmten Bug erzeugt hat.
+
+                    <pre><code>
+$ git bisect start
+$ git bisect bad
+$ git bisect good v1.0
+Bisecting: 6 revisions left to test after this
+[ecb6e1bc347ccecc5f9350d878ce677feb13d3b2] error handling on repo
+                    </code></pre>
+                </section>
+
+				<section data-markdown>
+                    ## `git submodule`
+
+                    Möglichkeit andere git-Repos in eigenes git-Repo einzufügen 
+                    ohne sie zu kopieren. Volle History und Möglichkeit zum Updates besteht.
+
+                    <pre><code>
+$ git submodule add git://github.com/chneukirchen/rack.git lib/rack
+# erstellt .gitmodules und ändert .git/config
+
+git clone --recursive git://url.to.my.git.repo
+                    </code></pre>
+                </section>
+
+				<section data-markdown>
+                    ## git hooks
+
+                    Möglichkeit bei bestimmten Ereignissen (Commit, Push ...) Scripte auszuführen.
+
+                    Client-Side- und Server-Side-Hooks sind möglich. Templates liegen in `.git/hooks/`
+
+                </section>
+
+                <section>
+                    <h2>Es gibt noch viel zu entdecken ...</h2>
+
+                    <pre><code>
+$ man git-[TAB]
+Display all 146 possibilities? (y or n)
+                    </code></pre>
+                </section>
+
 			</div>
 
 			<!-- The navigational controls UI -->
